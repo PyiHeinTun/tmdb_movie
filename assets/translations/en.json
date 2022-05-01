@@ -1,0 +1,29 @@
+{
+    "app_name" : "TMDB MOVIE",
+    "something_wrong" : "Opps Something went wrong!!!",
+    "home" : {
+        "title" : "Discover",
+        "popular_movie" : "BEST POPULAR FILMS AND SERIALS",
+        "show_times" : "Check Movie Showtimes",
+        "see_more" : "SEE MORE",
+        "show_cases" : "SHOWCASES",
+        "more_showcases" : "MORE SHOWCASES",
+        "best_actors" : "BEST ACTORS",
+        "more_actors" : "MORE ACTORS"
+    },
+    "detail" : {
+        "storyline" : "STORYLINE",
+        "play_trailer" : "PLAY TRAILER",
+        "rate_movie" : "RATE MOVIE",
+        "actors" : "ACTORS",
+        "about_film" : "ABOUT FILM",
+        "original_title" : "Original Title",
+        "type" : "Type",
+        "production" : "Production",
+        "premiere" : "Premiere",
+        "description" : "Description",
+        "creators" : "CREATORS",
+        "more_creators" : "MORE CREATORS",
+        "more" : "MORE"
+    } 
+}
