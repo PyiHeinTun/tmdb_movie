@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import '../../core/error/exception.dart';
 import '../models/movie_model.dart';
 import '../models/movie_response_model.dart';
 import '../../domain/entity/movie.dart';
@@ -20,8 +19,8 @@ class MovieRemoteSourceImpl implements MovieRemoteSource {
       var response = await Dio()
           .get(EndPoint.getMovieDetailByIdEndPoint(movieId: movieId));
       return MovieModel.fromJson(response.data);
-    } catch (_) {
-      throw ServerException();
+    } catch (e) {
+      throw Exception(e);
     }
   }
 
@@ -31,8 +30,8 @@ class MovieRemoteSourceImpl implements MovieRemoteSource {
       var response = await Dio()
           .get(EndPoint.getMoviesByGenereEndPoint(genereId: genereId));
       return MovieResponseModel.fromJson(response.data).movieList;
-    } catch (_) {
-      throw ServerException();
+    } catch (e) {
+      throw Exception(e);
     }
   }
 
@@ -41,8 +40,8 @@ class MovieRemoteSourceImpl implements MovieRemoteSource {
     try {
       var response = await Dio().get(EndPoint.getNowPlayingEndPoint());
       return MovieResponseModel.fromJson(response.data).movieList;
-    } catch (_) {
-      throw ServerException();
+    } catch (e) {
+      throw Exception(e);
     }
   }
 
@@ -51,8 +50,8 @@ class MovieRemoteSourceImpl implements MovieRemoteSource {
     try {
       var response = await Dio().get(EndPoint.getPopularMovieEndPoint());
       return MovieResponseModel.fromJson(response.data).movieList;
-    } catch (_) {
-      throw ServerException();
+    } catch (e) {
+      throw Exception(e);
     }
   }
 
@@ -61,8 +60,8 @@ class MovieRemoteSourceImpl implements MovieRemoteSource {
     try {
       var response = await Dio().get(EndPoint.getShowCaseMoviesEndPoint());
       return MovieResponseModel.fromJson(response.data).movieList;
-    } catch (_) {
-      throw ServerException();
+    } catch (e) {
+      throw Exception(e);
     }
   }
 }

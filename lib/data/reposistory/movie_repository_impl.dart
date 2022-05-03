@@ -1,4 +1,3 @@
-import '../../core/error/exception.dart';
 import '../sources/movie_remote_source.dart';
 import '../../domain/entity/movie.dart';
 import '../../core/error/failure.dart';
@@ -14,8 +13,8 @@ class MovieRepositoryImpl implements MovieRepository {
     try {
       final Movie data = await dataSource.getMovieDetailById(movieId: movieId);
       return Right(data);
-    } on ServerException catch (_) {
-      return Left(ServerFailure());
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -26,8 +25,8 @@ class MovieRepositoryImpl implements MovieRepository {
       final List<Movie> data =
           await dataSource.getMoviesByGenere(genereId: genereId);
       return Right(data);
-    } on ServerException catch (_) {
-      return Left(ServerFailure());
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -36,8 +35,8 @@ class MovieRepositoryImpl implements MovieRepository {
     try {
       final List<Movie> data = await dataSource.getNowPlayingMovies();
       return Right(data);
-    } on ServerException catch (_) {
-      return Left(ServerFailure());
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -46,8 +45,8 @@ class MovieRepositoryImpl implements MovieRepository {
     try {
       final List<Movie> data = await dataSource.getPopularMovies();
       return Right(data);
-    } on ServerException catch (_) {
-      return Left(ServerFailure());
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -57,8 +56,8 @@ class MovieRepositoryImpl implements MovieRepository {
     try {
       final List<Movie> data = await dataSource.getShowCaseMovies();
       return Right(data);
-    } on ServerException catch (_) {
-      return Left(ServerFailure());
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 }

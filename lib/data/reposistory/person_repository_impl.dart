@@ -1,4 +1,3 @@
-import '../../core/error/exception.dart';
 import '../sources/person_remote_source.dart';
 import '../../domain/entity/actors_crews_response.dart';
 import '../../core/error/failure.dart';
@@ -17,8 +16,8 @@ class PersonRepositoryImpl implements PersonReposistory {
       final ActorsCrewsResponse data =
           await dataSource.getActorsCrews(movieId: movieId);
       return Right(data);
-    } on ServerException catch (_) {
-      return Left(ServerFailure());
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -28,8 +27,8 @@ class PersonRepositoryImpl implements PersonReposistory {
     try {
       final PopularPersonResponse data = await dataSource.getPopularPerson();
       return Right(data);
-    } on ServerException catch (_) {
-      return Left(ServerFailure());
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 }

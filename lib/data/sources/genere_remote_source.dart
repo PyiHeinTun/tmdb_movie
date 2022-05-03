@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import '../../core/error/exception.dart';
 import '../models/genere_response_model.dart';
 import '../../domain/entity/genere.dart';
 import '../../res/rest_end_point.dart';
@@ -14,8 +13,8 @@ class GenereRemoteSourceImpl implements GenereRemoteSource {
     try {
       var response = await Dio().get(EndPoint.getAllGenereEndPoint());
       return GenereResponseModel.fromJson(response.data).genereList;
-    } catch (_) {
-      throw ServerException();
+    } catch (e) {
+      throw Exception(e);
     }
   }
 }

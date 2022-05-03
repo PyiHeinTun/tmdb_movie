@@ -1,8 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tmdb_movie/presentations/bloc/person_bloc/person_bloc.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/error_indicator.dart';
+import 'package:flutter_tmdb_movie/blocs/home_bloc.dart';
+import 'package:flutter_tmdb_movie/domain/entity/person.dart';
 import 'package:flutter_tmdb_movie/presentations/widgets/shared/loading_indicator.dart';
 import 'package:flutter_tmdb_movie/presentations/widgets/shared/person_card.dart';
 import 'package:flutter_tmdb_movie/res/app_theme.dart';
@@ -20,15 +19,10 @@ class PopularActors extends StatefulWidget {
 class _PopularActorsState extends State<PopularActors>
     with TickerProviderStateMixin {
   @override
-  void initState() {
-    Provider.of<PersonBloc>(context, listen: false).add(GetPopularActors());
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        //Title For Popular Actors
         Container(
           height: 280.h,
           color: Theme.of(context).colorScheme.background,
@@ -53,53 +47,39 @@ class _PopularActorsState extends State<PopularActors>
                   ],
                 ),
               ),
+
+              //Actors List
               SizedBox(
-                height: 180.h,
-                child: BlocBuilder<PersonBloc, PersonState>(
-                  buildWhen: (previous, current) {
-                    if (current is GetPopularActorsError ||
-                        current is GetPopularActorsLoading ||
-                        current is GetPopularActorsLoaded) {
-                      return true;
-                    }
-                    return false;
-                  },
-                  builder: (context, state) {
-                    if (state is GetPopularActorsError) {
-                      return const ErrorIndicator();
-                    } else if (state is GetPopularActorsLoading) {
+                  height: 180.h,
+                  child: Selector<HomeBloc, List<Person>?>(
+                    selector: (context, bloc) => bloc.popularActors,
+                    builder: (context, state, child) {
+                      if (state != null) {
+                        return NoGLow(
+                          child: ListView.separated(
+                            physics: const BouncingScrollPhysics(),
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, i) {
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                  left: i == 0 ? 20.w : 0,
+                                  right: i + 1 == state.length ? 20.w : 0,
+                                ),
+                                child: PersonCard(person: state[i]),
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return SizedBox(
+                                width: 10.w,
+                              );
+                            },
+                            itemCount: state.length,
+                          ),
+                        );
+                      }
                       return const LoadingIndicator();
-                    } else if (state is GetPopularActorsLoaded) {
-                      return NoGLow(
-                        child: ListView.separated(
-                          physics: const BouncingScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, i) {
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                left: i == 0 ? 20.w : 0,
-                                right:
-                                    i + 1 == state.personList.personList.length
-                                        ? 20.w
-                                        : 0,
-                              ),
-                              child: PersonCard(
-                                  person: state.personList.personList[i]),
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return SizedBox(
-                              width: 10.w,
-                            );
-                          },
-                          itemCount: state.personList.personList.length,
-                        ),
-                      );
-                    }
-                    return const LoadingIndicator();
-                  },
-                ),
-              ),
+                    },
+                  )),
             ],
           ),
         ),

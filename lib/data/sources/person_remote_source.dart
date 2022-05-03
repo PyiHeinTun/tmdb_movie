@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import '../../core/error/exception.dart';
 import '../models/actors_crews_response_model.dart';
 import '../models/popular_person_response_model.dart';
 import '../../domain/entity/actors_crews_response.dart';
@@ -19,7 +18,7 @@ class PersonRemoteSourceImpl implements PersonRemoteSource {
           await Dio().get(EndPoint.getActorsCrewsEndPoint(movieId: movieId));
       return ActorsCrewsResponseModel.fromJson(response.data);
     } catch (e) {
-      throw ServerException();
+      throw Exception(e);
     }
   }
 
@@ -29,7 +28,7 @@ class PersonRemoteSourceImpl implements PersonRemoteSource {
       var response = await Dio().get(EndPoint.popularPersonEndPoint());
       return PopularPersonResponseModel.fromJson(response.data);
     } catch (e) {
-      throw ServerException();
+      throw Exception(e);
     }
   }
 }
