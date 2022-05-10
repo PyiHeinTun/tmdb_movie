@@ -12,11 +12,12 @@ void errorAlert(BuildContext context, var bloc) {
           return AlertDialog(
             title: const Text('Error Occured'),
             content: Text(
-              bloc.errorMessage!,
+              bloc.errorMessage ?? '',
             ),
             actions: [
               TextButton(
                 onPressed: () {
+                  bloc.errorFlatReset();
                   Navigator.of(context).pop();
                 },
                 child: const Text("Ok"),

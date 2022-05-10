@@ -1,11 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tmdb_movie/blocs/home_bloc.dart';
-import 'package:flutter_tmdb_movie/domain/entity/movie.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/loading_indicator.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/navigate_to_detail.dart';
-import 'package:flutter_tmdb_movie/res/app_theme.dart';
+import '../../../blocs/home_bloc.dart';
+import '../../../datas/vos/movie_vo.dart';
+
+import '../shared/loading_indicator.dart';
+import '../shared/navigate_to_detail.dart';
+import '../../../res/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -26,7 +27,7 @@ class _NowPlayingState extends State<NowPlaying> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 250.h,
-      child: Selector<HomeBloc, List<Movie>?>(
+      child: Selector<HomeBloc, List<MovieVO>?>(
           selector: (context, bloc) => bloc.nowPlayingMovies,
           builder: (context, state, child) {
             if (state != null) {
@@ -47,8 +48,7 @@ class _NowPlayingState extends State<NowPlaying> {
                               image: DecorationImage(
                                 fit: BoxFit.cover,
                                 image: CachedNetworkImageProvider(
-                                    "https://image.tmdb.org/t/p/original/" +
-                                        state[i].backdropPath),
+                                    state[i].backdropPath ?? ''),
                               ),
                             ),
                             child: Stack(
@@ -96,7 +96,7 @@ class _NowPlayingState extends State<NowPlaying> {
                                       horizontal: 20.w,
                                     ),
                                     child: Text(
-                                      state[i].title,
+                                      state[i].title ?? '',
                                       style:
                                           MyTextStyle.sliderMovieName(context),
                                     ),
@@ -111,6 +111,7 @@ class _NowPlayingState extends State<NowPlaying> {
                   ),
 
                   //Dot Indicator
+
                   Padding(
                     padding: EdgeInsets.only(bottom: 10.h),
                     child: Align(

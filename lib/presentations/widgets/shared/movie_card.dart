@@ -1,20 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tmdb_movie/domain/entity/movie.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/loading_indicator.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/navigate_to_detail.dart';
-import 'package:flutter_tmdb_movie/res/app_theme.dart';
+import '../../../datas/vos/movie_vo.dart';
+import 'loading_indicator.dart';
+import 'navigate_to_detail.dart';
+import 'star_rating.dart';
+import '../../../res/app_theme.dart';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:smooth_star_rating/smooth_star_rating.dart';
+// import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class MovieCard extends StatelessWidget {
-  final Movie movie;
+  final MovieVO? movie;
   const MovieCard({Key? key, required this.movie}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return NavigateToDetail(
+      key: Key(movie?.id.toString() ?? ''),
       movie: movie,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 20.h),
@@ -25,9 +27,8 @@ class MovieCard extends StatelessWidget {
               height: 230.h * 0.7,
               width: 120.w,
               child: CachedNetworkImage(
-                cacheKey: movie.id.toString(),
-                imageUrl: "https://image.tmdb.org/t/p/w300_and_h450_face/" +
-                    movie.backdropPath,
+                cacheKey: movie?.id.toString(),
+                imageUrl: movie?.backdropPath ?? '',
                 fit: BoxFit.cover,
                 progressIndicatorBuilder: (context, url, downloadProgress) =>
                     const LoadingIndicator(),
@@ -41,7 +42,7 @@ class MovieCard extends StatelessWidget {
               width: 120.w,
               height: 35.sp,
               child: Text(
-                movie.title,
+                movie?.title ?? '',
                 style: MyTextStyle.movieCardTitle(context),
               ),
             ),
@@ -52,22 +53,16 @@ class MovieCard extends StatelessWidget {
                 child: Row(
               children: [
                 Text(
-                  movie.voteAverage.toString().replaceAll('.', ','),
+                  movie?.voteAverage.toString().replaceAll('.', ',') ?? '',
                   style: MyTextStyle.movieCardSubtitle(context),
                 ),
                 SizedBox(
                   width: 10.w,
                 ),
-                SmoothStarRating(
-                  allowHalfRating: false,
-                  onRated: (v) {},
-                  starCount: 5,
-                  rating: 5 * (movie.voteAverage / 10),
-                  size: 12.sp,
-                  isReadOnly: true,
-                  color: Theme.of(context).colorScheme.secondary,
-                  borderColor: Theme.of(context).colorScheme.secondary,
-                  spacing: 0.0,
+                SizedBox(
+                  child: Row(
+                    children: getStar(movie?.voteAverage),
+                  ),
                 ),
               ],
             )),

@@ -1,38 +1,25 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_tmdb_movie/data/reposistory/genere_repository_impl.dart';
-import 'package:flutter_tmdb_movie/data/reposistory/movie_repository_impl.dart';
-import 'package:flutter_tmdb_movie/data/reposistory/person_repository_impl.dart';
-import 'package:flutter_tmdb_movie/data/sources/genere_remote_source.dart';
-import 'package:flutter_tmdb_movie/data/sources/movie_remote_source.dart';
-import 'package:flutter_tmdb_movie/data/sources/person_remote_source.dart';
-import 'package:flutter_tmdb_movie/domain/entity/genere.dart';
-import 'package:flutter_tmdb_movie/domain/entity/movie.dart';
-import 'package:flutter_tmdb_movie/domain/entity/person.dart';
-import 'package:flutter_tmdb_movie/domain/reposistory/genere_repository.dart';
-import 'package:flutter_tmdb_movie/domain/reposistory/movie_repository.dart';
-import 'package:flutter_tmdb_movie/domain/reposistory/person_repository.dart';
+import '../datas/models/app_models.dart';
+import '../datas/models/app_models_impl.dart';
+import '../datas/vos/genere_vo.dart';
+import '../datas/vos/movie_vo.dart';
+import '../datas/vos/person_vo.dart';
 
 class HomeBloc extends ChangeNotifier {
   ///States
-  List<Movie>? nowPlayingMovies;
-  List<Movie>? popularMovies;
-  List<Genere>? genereList;
-  List<Movie>? moviesByGenere;
-  List<Movie>? showCaseMovies;
-  List<Person>? popularActors;
+  List<MovieVO>? nowPlayingMovies;
+  List<MovieVO>? popularMovies;
+  List<GenereVO>? genereList;
+  List<MovieVO>? moviesByGenere;
+  List<MovieVO>? showCaseMovies;
+  List<PersonVO>? popularActors;
 
   bool? errorFlag;
   String? errorMessage;
 
   ///Repository Dependency
-  MovieRepository movieRepository =
-      MovieRepositoryImpl(dataSource: MovieRemoteSourceImpl());
 
-  PersonReposistory personReposistory =
-      PersonRepositoryImpl(dataSource: PersonRemoteSourceImpl());
-
-  GenereRepository genereRepository =
-      GenereReposistoryImpl(dataSource: GenereRemoteSourceImpl());
+  final AppModels _movieModel = AppModelsImpl();
 
   ///Constructor Method
   HomeBloc() {
@@ -40,109 +27,92 @@ class HomeBloc extends ChangeNotifier {
   }
 
   ///GET MOVIES BY TAPPING GENERE
-  getMoviesByTapping({required int genereId}) async {
+  onTapGenre({required int index}) async {
     moviesByGenere = null;
     notifyListeners();
-    final movieByGenereData = await movieRepository.getMoviesByGenere(
-        genereId: genereList![genereId].id);
-    movieByGenereData.fold(
-      (l) {
-        errorFlag = true;
-        errorMessage = l.message;
-        notifyListeners();
-      },
-      (r) {
-        moviesByGenere = r;
-        notifyListeners();
-      },
-    );
+    _movieModel
+        .getMoviesByGenereFromDatabase(genereId: genereList![index].id!)
+        ?.listen((data) {
+      moviesByGenere = data;
+      notifyListeners();
+    }).onError((error, stackTrace) {
+      errorFlag = true;
+      errorMessage = error.toString();
+      notifyListeners();
+    });
+  }
+
+  ///RESET ERROR FLAG TO FALSE
+  errorFlatReset() {
+    errorFlag = false;
+    errorMessage = '';
+    notifyListeners();
   }
 
   ///GET ALL ENDPOINT INSTANT
   _getAllEndpointInstantAndSet() async {
-    ///       NOW PLAYING MOVIES
-    final getNowPlayingMoviesData = await movieRepository.getNowPlayingMovies();
-    getNowPlayingMoviesData.fold(
-      (l) {
-        errorFlag = true;
-        errorMessage = l.message;
-        notifyListeners();
-      },
-      (r) {
-        nowPlayingMovies = r;
-        notifyListeners();
-      },
-    );
+    ///        NOW PLAYING MOVIES
+    _movieModel.getNowPlayingFromDatabase()?.listen((movieList) {
+      nowPlayingMovies = movieList;
+      notifyListeners();
+    }).onError((error, stackTrace) {
+      errorFlag = true;
+      errorMessage = error.toString();
+      notifyListeners();
+    });
 
     ///       POPULAR MOVIES
-    final popularMoviesData = await movieRepository.getPopularMovies();
-    popularMoviesData.fold(
-      (l) {
-        errorFlag = true;
-        errorMessage = l.message;
-        notifyListeners();
-      },
-      (r) {
-        popularMovies = r;
-        notifyListeners();
-      },
-    );
+    _movieModel.getPopularMovieFromDatabase()?.listen((data) {
+      popularMovies = data;
+      notifyListeners();
+    }).onError((error, stackTrace) {
+      errorFlag = true;
+      errorMessage = error.toString();
+      notifyListeners();
+    });
 
     ///        GENERE LIST
-    final genereListData = await genereRepository.getAllGenere();
-    genereListData.fold(
-      (l) {
-        errorFlag = true;
-        errorMessage = l.message;
-        notifyListeners();
-      },
-      (r) {
-        genereList = r;
-        notifyListeners();
-      },
-    );
+    _movieModel.getAllGenereFromDatabase()?.then((data) {
+      genereList = data;
+      notifyListeners();
 
-    ///       MOVIES BY GENERE
-    final moviesByGenereData =
-        await movieRepository.getMoviesByGenere(genereId: genereList!.first.id);
-    moviesByGenereData.fold(
-      (l) {
-        errorFlag = true;
-        errorMessage = l.message;
-        notifyListeners();
-      },
-      (r) {
-        moviesByGenere = r;
-        notifyListeners();
-      },
-    );
+      ///       MOVIES BY GENERE
+      if (genereList!.isNotEmpty) {
+        _movieModel
+            .getMoviesByGenereFromDatabase(genereId: genereList![0].id!)
+            ?.listen((data) {
+          moviesByGenere = data;
+          notifyListeners();
+        }).onError((error, stackTrace) {
+          errorFlag = true;
+          errorMessage = error.toString();
+          notifyListeners();
+        });
+      }
+    }).onError((error, stackTrace) {
+      errorFlag = true;
+      errorMessage = error.toString();
+      notifyListeners();
+    });
 
     ///       SHOWCASE MOVIES
-    final showCaseMovieData = await movieRepository.getShowCaseMovies();
-    showCaseMovieData.fold(
-      (l) {
-        errorFlag = true;
-        errorMessage = l.message;
-        notifyListeners();
-      },
-      (r) {
-        showCaseMovies = r;
-        notifyListeners();
-      },
-    );
+    _movieModel.getShowCaseMoviesFromDatabase()?.listen((data) {
+      showCaseMovies = data;
+      notifyListeners();
+    }).onError((error, stackTrace) {
+      errorFlag = true;
+      errorMessage = error.toString();
+      notifyListeners();
+    });
 
     ///      POPULAR ACTORS
-    final popularActorsData = await personReposistory.getPopularActors();
-    popularActorsData.fold(
-      (l) {
-        errorFlag = true;
-        errorMessage = l.message;
-        notifyListeners();
-      },
-      (r) {
-        popularActors = r.personList;
-        notifyListeners();
-      },
-    );
+    _movieModel.getPopularPersonFromDatabase()?.then((data) {
+      popularActors = data;
+      notifyListeners();
+    }).onError((error, stackTrace) {
+      errorFlag = true;
+      errorMessage = error.toString();
+      notifyListeners();
+    });
   }
 }

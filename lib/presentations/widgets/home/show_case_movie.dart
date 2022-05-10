@@ -1,14 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tmdb_movie/blocs/home_bloc.dart';
-import 'package:flutter_tmdb_movie/domain/entity/movie.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/home/show_case_movie_detail.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/loading_indicator.dart';
+import '../../../blocs/home_bloc.dart';
+import '../../../datas/vos/movie_vo.dart';
+import 'show_case_movie_detail.dart';
+import '../shared/loading_indicator.dart';
 
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tmdb_movie/res/app_theme.dart';
-import 'package:flutter_tmdb_movie/utlity/no_glow.dart';
+import '../../../res/app_theme.dart';
+import '../../../utlity/no_glow.dart';
 
 class ShowCaseMovie extends StatefulWidget {
   const ShowCaseMovie({Key? key}) : super(key: key);
@@ -51,7 +51,7 @@ class _ShowCaseMovieState extends State<ShowCaseMovie> {
             height: 170.h,
             width: double.infinity,
             child: NoGLow(
-                child: Selector<HomeBloc, List<Movie>?>(
+                child: Selector<HomeBloc, List<MovieVO>?>(
               selector: (context, bloc) => bloc.showCaseMovies,
               builder: (context, state, child) {
                 if (state != null) {

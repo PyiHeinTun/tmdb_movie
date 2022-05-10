@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tmdb_movie/res/app_theme.dart';
+import '../../../res/app_theme.dart';
 
 class ErrorIndicator extends StatelessWidget {
   const ErrorIndicator({Key? key}) : super(key: key);

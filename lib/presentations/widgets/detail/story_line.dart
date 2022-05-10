@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tmdb_movie/domain/entity/movie.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/detail/play_button.dart';
-import 'package:flutter_tmdb_movie/res/app_theme.dart';
+import '../../../datas/vos/movie_vo.dart';
+import 'play_button.dart';
+import '../../../res/app_theme.dart';
 
 class StoryLine extends StatelessWidget {
-  final Movie movie;
+  final MovieVO? movie;
   const StoryLine({Key? key, required this.movie}) : super(key: key);
 
   @override
@@ -23,7 +23,7 @@ class StoryLine extends StatelessWidget {
           Container(
             padding: EdgeInsets.only(top: 20.h),
             child: Text(
-              movie.overview,
+              movie?.overview ?? '',
               style: MyTextStyle.movieCardSubtitle(context)
                   .copyWith(fontSize: 14.sp),
             ),

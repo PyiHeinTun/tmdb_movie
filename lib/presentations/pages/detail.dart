@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tmdb_movie/blocs/movie_detail_bloc.dart';
-import 'package:flutter_tmdb_movie/domain/entity/genere.dart';
-import 'package:flutter_tmdb_movie/domain/entity/person.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/detail/about_film.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/detail/actors_crews.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/error_alert.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/loading_indicator.dart';
+import '../../blocs/movie_detail_bloc.dart';
+import '../../datas/vos/genere_vo.dart';
+import '../../datas/vos/movie_vo.dart';
+import '../../datas/vos/person_vo.dart';
+import '../widgets/detail/about_film.dart';
+import '../widgets/detail/actors_crews.dart';
+import '../widgets/shared/error_alert.dart';
+import '../widgets/shared/loading_indicator.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_tmdb_movie/domain/entity/movie.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/detail/generate_category.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/detail/sliver_app_bar.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/detail/story_line.dart';
-import 'package:flutter_tmdb_movie/utlity/no_glow.dart';
+import '../widgets/detail/generate_category.dart';
+import '../widgets/detail/sliver_app_bar.dart';
+import '../widgets/detail/story_line.dart';
+import '../../utlity/no_glow.dart';
 
 bool firstTime = true;
 
 class DetailPage extends StatefulWidget {
-  final Movie movie;
+  final MovieVO? movie;
   const DetailPage({Key? key, required this.movie}) : super(key: key);
 
   @override
@@ -30,7 +30,7 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = MovieDetailBloc(movieId: widget.movie.id.toString());
+    final bloc = MovieDetailBloc(movieId: widget.movie!.id.toString());
     return ChangeNotifierProvider(
       create: (context) => bloc,
       child: Scaffold(
@@ -61,27 +61,32 @@ class _DetailPageState extends State<DetailPage> {
                   padding: const EdgeInsets.all(0),
                   children: [
                     //Genere List
-                    Selector<MovieDetailBloc, Movie?>(
+                    Selector<MovieDetailBloc, MovieVO?>(
+                      shouldRebuild: (previous, next) => true,
                       selector: (context, bloc) => bloc.movieDetail,
                       builder: (context, state, child) {
                         if (state != null) {
-                          final List<Genere> genere = state.generes;
-                          if (genere.isNotEmpty) {
-                            runningTime = runningTime + 1;
-                            if (runningTime >= 2) {
-                              runningTime = 0;
-                              for (var element in genere) {
-                                numberOfLetters =
-                                    numberOfLetters + element.name.length;
-                              }
-                            } else if (firstTime) {
-                              firstTime = false;
-                              for (var element in genere) {
-                                numberOfLetters =
-                                    numberOfLetters + element.name.length;
-                              }
+                          if (state.generes != null) {
+                            Provider.of<MovieDetailBloc>(context, listen: false)
+                                .subscription
+                                ?.cancel();
+                          }
+                          final List<GenereVO>? genere = state.generes;
+                          runningTime = runningTime + 1;
+                          if (runningTime >= 2) {
+                            runningTime = 0;
+                            for (var element in genere ?? []) {
+                              numberOfLetters =
+                                  numberOfLetters + element.name?.length as int;
+                            }
+                          } else if (firstTime) {
+                            firstTime = false;
+                            for (var element in genere ?? []) {
+                              numberOfLetters =
+                                  numberOfLetters + element.name!.length as int;
                             }
                           }
+
                           return SizedBox(
                             width: double.infinity,
                             height: numberOfLetters >= 23 ? 80 : 40,
@@ -98,7 +103,7 @@ class _DetailPageState extends State<DetailPage> {
                                     children: generateCategory(
                                       genere: genere,
                                       context: context,
-                                      time: state.runTime,
+                                      time: state.runTime ?? 1,
                                     ),
                                   ),
                                 ),
@@ -130,7 +135,7 @@ class _DetailPageState extends State<DetailPage> {
                     ),
 
                     //Actors
-                    Selector<MovieDetailBloc, List<Person>?>(
+                    Selector<MovieDetailBloc, List<PersonVO>?>(
                       selector: (context, bloc) => bloc.actors,
                       builder: (context, state, child) {
                         if (state != null) {
@@ -148,7 +153,8 @@ class _DetailPageState extends State<DetailPage> {
                     ),
 
                     //About Film
-                    Selector<MovieDetailBloc, Movie?>(
+                    Selector<MovieDetailBloc, MovieVO?>(
+                      shouldRebuild: (previous, next) => true,
                       selector: (context, bloc) => bloc.movieDetail,
                       builder: (context, state, child) {
                         if (state != null) {
@@ -164,8 +170,8 @@ class _DetailPageState extends State<DetailPage> {
                     ),
 
                     //Creators
-                    Selector<MovieDetailBloc, List<Person>?>(
-                      selector: (context, bloc) => bloc.actors,
+                    Selector<MovieDetailBloc, List<PersonVO>?>(
+                      selector: (context, bloc) => bloc.crews,
                       builder: (context, state, child) {
                         if (state != null) {
                           return ActorsCrews(

@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tmdb_movie/domain/entity/person.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/loading_indicator.dart';
-import 'package:flutter_tmdb_movie/res/app_theme.dart';
+import '../../../datas/vos/person_vo.dart';
+import 'loading_indicator.dart';
+import '../../../res/app_theme.dart';
 
 class PersonCard extends StatelessWidget {
-  final Person person;
+  final PersonVO person;
   PersonCard({Key? key, required this.person}) : super(key: key);
 
   final ValueNotifier<bool> _isFav = ValueNotifier(false);
@@ -21,8 +21,7 @@ class PersonCard extends StatelessWidget {
           width: ScreenUtil().screenWidth * 0.4,
           height: double.infinity,
           child: CachedNetworkImage(
-            imageUrl: "https://image.tmdb.org/t/p/w300_and_h450_face/" +
-                person.profilePath,
+            imageUrl: person.profilePath!,
             fit: BoxFit.cover,
             progressIndicatorBuilder: (context, url, downloadProgress) =>
                 const LoadingIndicator(),
@@ -57,7 +56,7 @@ class PersonCard extends StatelessWidget {
               SizedBox(
                 width: 120.w,
                 child: Text(
-                  person.name,
+                  person.name ?? '',
                   style: MyTextStyle.showCaseTitle(context),
                 ),
               ),

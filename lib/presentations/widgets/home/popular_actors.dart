@@ -1,11 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tmdb_movie/blocs/home_bloc.dart';
-import 'package:flutter_tmdb_movie/domain/entity/person.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/loading_indicator.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/person_card.dart';
-import 'package:flutter_tmdb_movie/res/app_theme.dart';
-import 'package:flutter_tmdb_movie/utlity/no_glow.dart';
+import '../../../blocs/home_bloc.dart';
+import '../../../datas/vos/person_vo.dart';
+import '../shared/loading_indicator.dart';
+import '../shared/person_card.dart';
+import '../../../res/app_theme.dart';
+import '../../../utlity/no_glow.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -51,7 +51,7 @@ class _PopularActorsState extends State<PopularActors>
               //Actors List
               SizedBox(
                   height: 180.h,
-                  child: Selector<HomeBloc, List<Person>?>(
+                  child: Selector<HomeBloc, List<PersonVO>?>(
                     selector: (context, bloc) => bloc.popularActors,
                     builder: (context, state, child) {
                       if (state != null) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tmdb_movie/res/app_theme.dart';
+import '../../../res/app_theme.dart';
 
 // ignore: must_be_immutable
 class DetailChip extends StatelessWidget {

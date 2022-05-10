@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tmdb_movie/domain/entity/genere.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/detail/detail_chip.dart';
-import 'package:flutter_tmdb_movie/res/app_theme.dart';
-import 'package:flutter_tmdb_movie/utlity/minute_to_hm.dart';
+import '../../../datas/vos/genere_vo.dart';
+import 'detail_chip.dart';
+import '../../../res/app_theme.dart';
+import '../../../utlity/minute_to_hm.dart';
 
 List<Widget> generateCategory({
-  required List<Genere> genere,
+  required List<GenereVO>? genere,
   required BuildContext context,
   required int time,
 }) {
@@ -36,8 +36,8 @@ List<Widget> generateCategory({
       ),
     ),
   );
-  for (var data in genere) {
-    list.add(DetailChip(name: data.name));
+  for (var data in genere ?? []) {
+    list.add(DetailChip(name: data.name ?? ''));
   }
   return list;
 }

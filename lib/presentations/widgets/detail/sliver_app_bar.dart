@@ -1,11 +1,11 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tmdb_movie/domain/entity/movie.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/detail/detail_app_bar.dart';
+import '../../../datas/vos/movie_vo.dart';
+import 'detail_app_bar.dart';
 
 class MySliverAppBar extends StatelessWidget {
-  final Movie movie;
+  final MovieVO? movie;
   const MySliverAppBar({Key? key, required this.movie}) : super(key: key);
 
   @override

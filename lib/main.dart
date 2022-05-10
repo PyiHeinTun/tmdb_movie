@@ -2,11 +2,15 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tmdb_movie/res/app_theme.dart';
-import 'package:flutter_tmdb_movie/utlity/app_router.dart';
+import 'persistence/hive_helper.dart';
+import 'res/app_theme.dart';
+import 'utlity/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await HiveHelper.init();
+  await HiveHelper.registerAdapter();
+  await HiveHelper.openBoxs();
   await EasyLocalization.ensureInitialized();
   EasyLocalization.logger.enableBuildModes = [];
   await SystemChrome.setPreferredOrientations([

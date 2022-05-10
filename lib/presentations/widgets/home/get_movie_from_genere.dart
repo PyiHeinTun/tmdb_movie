@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tmdb_movie/blocs/home_bloc.dart';
-import 'package:flutter_tmdb_movie/domain/entity/genere.dart';
-import 'package:flutter_tmdb_movie/domain/entity/movie.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/loading_indicator.dart';
-import 'package:flutter_tmdb_movie/utlity/no_glow.dart';
+import '../../../blocs/home_bloc.dart';
+import '../../../datas/vos/genere_vo.dart';
+import '../../../datas/vos/movie_vo.dart';
+import '../shared/loading_indicator.dart';
+import '../../../utlity/no_glow.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/movie_card.dart';
+import '../shared/movie_card.dart';
 
 class GetMovieFromGenere extends StatefulWidget {
   const GetMovieFromGenere({Key? key}) : super(key: key);
@@ -15,23 +15,33 @@ class GetMovieFromGenere extends StatefulWidget {
   State<GetMovieFromGenere> createState() => _GetMovieFromGenereState();
 }
 
+int _tabIndex = 0;
+
 class _GetMovieFromGenereState extends State<GetMovieFromGenere>
     with TickerProviderStateMixin {
   late TabController _controller;
+
+  @override
+  void initState() {
+    _tabIndex = 0;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         //Genere List
-        Selector<HomeBloc, List<Genere>?>(
+        Selector<HomeBloc, List<GenereVO>?>(
           selector: (context, bloc) => bloc.genereList,
           builder: (context, state, child) {
             if (state != null) {
               _controller = TabController(
+                initialIndex: _tabIndex,
                 length: state.length,
                 vsync: this,
               );
+
               return Theme(
                 data: ThemeData().copyWith(splashColor: Colors.transparent),
                 child: TabBar(
@@ -49,12 +59,14 @@ class _GetMovieFromGenereState extends State<GetMovieFromGenere>
                       ),
                       child: Tab(
                         text: state[index].name,
+                        key: Key(state[index].name ?? ''),
                       ),
                     ),
                   ),
                   onTap: (value) {
+                    _tabIndex = value;
                     Provider.of<HomeBloc>(context, listen: false)
-                        .getMoviesByTapping(genereId: value);
+                        .onTapGenre(index: value);
                   },
                 ),
               );
@@ -67,7 +79,7 @@ class _GetMovieFromGenereState extends State<GetMovieFromGenere>
         Container(
             height: 270.h,
             color: Theme.of(context).colorScheme.background,
-            child: Selector<HomeBloc, List<Movie>?>(
+            child: Selector<HomeBloc, List<MovieVO>?>(
               selector: (context, bloc) => bloc.moviesByGenere,
               builder: (context, state, child) {
                 if (state != null) {

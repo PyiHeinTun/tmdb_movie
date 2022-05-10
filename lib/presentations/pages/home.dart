@@ -1,14 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tmdb_movie/blocs/home_bloc.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/error_alert.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/home/popular_actors.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/home/check_movie_time.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/home/get_movie_from_genere.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/home/home_app_bar.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/home/now_playing.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/home/popular_movies.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/home/show_case_movie.dart';
+import '../../blocs/home_bloc.dart';
+import '../widgets/shared/error_alert.dart';
+import '../widgets/home/popular_actors.dart';
+import '../widgets/home/check_movie_time.dart';
+import '../widgets/home/get_movie_from_genere.dart';
+import '../widgets/home/home_app_bar.dart';
+import '../widgets/home/now_playing.dart';
+import '../widgets/home/popular_movies.dart';
+import '../widgets/home/show_case_movie.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {

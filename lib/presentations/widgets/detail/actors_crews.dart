@@ -1,13 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tmdb_movie/domain/entity/person.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/person_card.dart';
-import 'package:flutter_tmdb_movie/res/app_theme.dart';
-import 'package:flutter_tmdb_movie/utlity/no_glow.dart';
+import '../../../datas/vos/person_vo.dart';
+import '../shared/person_card.dart';
+import '../../../res/app_theme.dart';
+import '../../../utlity/no_glow.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ActorsCrews extends StatefulWidget {
-  final List<Person> person;
+  final List<PersonVO>? person;
   final bool isActor;
 
   ///TO USE THIS YOU MUST CALL BLOC FOR ACTORS AND CREWS
@@ -73,10 +73,10 @@ class _ActorsCrewsState extends State<ActorsCrews>
                       return Padding(
                         padding: EdgeInsets.only(
                           left: i == 0 ? 20.w : 0,
-                          right: i + 1 == widget.person.length ? 20.w : 0,
+                          right: i + 1 == widget.person?.length ? 20.w : 0,
                         ),
                         child: PersonCard(
-                          person: widget.person[i],
+                          person: widget.person![i],
                         ),
                       );
                     },
@@ -85,7 +85,7 @@ class _ActorsCrewsState extends State<ActorsCrews>
                         width: 10.w,
                       );
                     },
-                    itemCount: widget.person.length,
+                    itemCount: widget.person!.length,
                   ),
                 ),
               ),

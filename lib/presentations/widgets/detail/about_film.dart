@@ -1,19 +1,18 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tmdb_movie/domain/entity/movie.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/detail/film_detail_text.dart';
-import 'package:flutter_tmdb_movie/res/app_theme.dart';
+import '../../../datas/vos/movie_vo.dart';
+import 'film_detail_text.dart';
+import '../../../res/app_theme.dart';
 
 class AboutFilm extends StatelessWidget {
-  final Movie movie;
+  final MovieVO? movie;
   const AboutFilm({Key? key, required this.movie}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     DateTime tempDate;
-    final String type = movie.generes.map((e) => e.name).toList().toString();
     try {
-      tempDate = DateFormat("yyyy-MM-dd").parse(movie.releaseDate);
+      tempDate = DateFormat("yyyy-MM-dd").parse(movie?.releaseDate ?? '');
     } catch (e) {
       tempDate = DateTime.now();
     }
@@ -31,15 +30,15 @@ class AboutFilm extends StatelessWidget {
           ),
           FlimDetailText(
             title: "Original Title:",
-            text: movie.originalTitle,
+            text: movie?.originalTitle ?? '',
           ),
           FlimDetailText(
             title: "Type:",
-            text: type.substring(1, type.length - 1),
+            text: movie?.generes?.first.name ?? '',
           ),
           FlimDetailText(
             title: "Production:",
-            text: movie.productionCountries,
+            text: movie?.productionCountries?.first.name ?? '',
           ),
           FlimDetailText(
             title: "Premiere:",
@@ -47,7 +46,7 @@ class AboutFilm extends StatelessWidget {
           ),
           FlimDetailText(
             title: "Description:",
-            text: movie.overview,
+            text: movie?.overview ?? '',
           ),
         ],
       ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tmdb_movie/domain/entity/movie.dart';
+import '../../../datas/vos/movie_vo.dart';
 
 class NavigateToDetail extends StatelessWidget {
   final Widget child;
-  final Movie movie;
+  final MovieVO? movie;
   const NavigateToDetail({Key? key, required this.child, required this.movie})
       : super(key: key);
 
@@ -13,6 +13,7 @@ class NavigateToDetail extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       child: child,
       onTap: () {
+        // print(movie?.id ?? '');
         Navigator.of(context).pushNamed('/detail', arguments: movie);
       },
     );

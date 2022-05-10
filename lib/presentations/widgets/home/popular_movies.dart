@@ -1,13 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tmdb_movie/blocs/home_bloc.dart';
-import 'package:flutter_tmdb_movie/domain/entity/movie.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/loading_indicator.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/movie_card.dart';
-import 'package:flutter_tmdb_movie/utlity/no_glow.dart';
+import '../../../blocs/home_bloc.dart';
+import '../../../datas/vos/movie_vo.dart';
+import '../shared/loading_indicator.dart';
+import '../shared/movie_card.dart';
+import '../../../utlity/no_glow.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_tmdb_movie/res/app_theme.dart';
+import '../../../res/app_theme.dart';
 
 class PopularMovies extends StatefulWidget {
   const PopularMovies({Key? key}) : super(key: key);
@@ -36,7 +36,7 @@ class _PopularMoviesState extends State<PopularMovies> {
         SizedBox(
           height: 270.h,
           child: NoGLow(
-            child: Selector<HomeBloc, List<Movie>?>(
+            child: Selector<HomeBloc, List<MovieVO>?>(
               selector: (context, bloc) => bloc.popularMovies,
               builder: (context, state, child) {
                 if (state != null) {

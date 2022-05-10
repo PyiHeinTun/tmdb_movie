@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tmdb_movie/res/app_theme.dart';
 import 'package:readmore/readmore.dart';
+
+import '../../../res/app_theme.dart';
 
 class FlimDetailText extends StatelessWidget {
   final String title;

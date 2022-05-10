@@ -1,65 +1,74 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_tmdb_movie/data/reposistory/movie_repository_impl.dart';
-import 'package:flutter_tmdb_movie/data/reposistory/person_repository_impl.dart';
-import 'package:flutter_tmdb_movie/data/sources/movie_remote_source.dart';
-import 'package:flutter_tmdb_movie/data/sources/person_remote_source.dart';
-import 'package:flutter_tmdb_movie/domain/entity/movie.dart';
-import 'package:flutter_tmdb_movie/domain/entity/person.dart';
-import 'package:flutter_tmdb_movie/domain/reposistory/movie_repository.dart';
-import 'package:flutter_tmdb_movie/domain/reposistory/person_repository.dart';
+
+import '../datas/models/app_models.dart';
+import '../datas/models/app_models_impl.dart';
+import '../datas/vos/person_vo.dart';
+
+import '../datas/vos/movie_vo.dart';
 
 class MovieDetailBloc extends ChangeNotifier {
   ///MovieID for Detail
   final String movieId;
+  late StreamSubscription<MovieVO?>? subscription;
 
   ///States
-  Movie? movieDetail;
-  List<Person>? actors;
-  List<Person>? crews;
+  MovieVO? movieDetail;
+  List<PersonVO>? actors;
+  List<PersonVO>? crews;
 
   bool? errorFlag;
   String? errorMessage;
 
   ///Repository Dependency
-  MovieRepository movieRepository =
-      MovieRepositoryImpl(dataSource: MovieRemoteSourceImpl());
-
-  PersonReposistory personReposistory =
-      PersonRepositoryImpl(dataSource: PersonRemoteSourceImpl());
+  final AppModels reposistory = AppModelsImpl();
 
   ///Constructor Method
   MovieDetailBloc({required this.movieId}) {
     getAllEndPointInstantAndSet();
   }
 
-  ///GET ALL ENDPOINT INSTANT
+  ///RESET ERROR FLAG TO FALSE
+  errorFlatReset() {
+    errorFlag = false;
+    errorMessage = '';
+    notifyListeners();
+  }
+
   getAllEndPointInstantAndSet() async {
+    //
     /// MOVIE DETAIL BY ID
-    final movieDetailData =
-        await movieRepository.getMovieDetailById(movieId: movieId);
-    movieDetailData.fold((l) {
-      errorFlag = true;
-      errorMessage = l.message;
+    var _notNotifyDetailBloc = false;
+    subscription = reposistory
+        .getMovieDetailByIdFromDatabase(movieId: movieId)
+        ?.listen((event) {
+      if (event?.generes != null && !_notNotifyDetailBloc) {
+        movieDetail = event;
+        _notNotifyDetailBloc = true;
+        notifyListeners();
+      }
+    });
+
+    //
+    /// GET ACTORS
+    reposistory.getActors(movieId: movieId)?.then((data) {
+      actors = data;
       notifyListeners();
-    }, (r) {
-      movieDetail = r;
+    }).onError((error, stackTrace) {
+      errorFlag = true;
+      errorMessage = error.toString();
       notifyListeners();
     });
 
-    /// GET ACTORS AND CREWS
-    final actorsAndCrewsData =
-        await personReposistory.getActorsCrews(movieId: movieId);
-    actorsAndCrewsData.fold(
-      (l) {
-        errorFlag = true;
-        errorMessage = l.message;
-        notifyListeners();
-      },
-      (r) {
-        actors = r.actors;
-        crews = r.crews;
-        notifyListeners();
-      },
-    );
+    //
+    /// GET CREWS
+    reposistory.getCrews(movieId: movieId)?.then((data) {
+      crews = data;
+      notifyListeners();
+    }).onError((error, stackTrace) {
+      errorFlag = true;
+      errorMessage = error.toString();
+    });
   }
 }

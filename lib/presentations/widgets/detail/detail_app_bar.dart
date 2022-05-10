@@ -4,21 +4,20 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_tmdb_movie/domain/entity/movie.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/detail/detail_chip.dart';
-import 'package:flutter_tmdb_movie/presentations/widgets/shared/loading_indicator.dart';
-import 'package:flutter_tmdb_movie/res/app_theme.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:smooth_star_rating/smooth_star_rating.dart';
+import '../../../datas/vos/movie_vo.dart';
+import 'detail_chip.dart';
+import '../shared/loading_indicator.dart';
+import '../shared/star_rating.dart';
+import '../../../res/app_theme.dart';
 
 class MyAppSpace extends StatelessWidget {
-  final Movie movie;
+  final MovieVO? movie;
   const MyAppSpace({Key? key, required this.movie}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    DateTime tempDate = movie.releaseDate.isNotEmpty
-        ? DateFormat("yyyy-MM-dd").parse(movie.releaseDate)
+    DateTime tempDate = movie!.releaseDate!.isNotEmpty
+        ? DateFormat("yyyy-MM-dd").parse(movie!.releaseDate!)
         : DateTime.now();
     return LayoutBuilder(
       builder: (context, c) {
@@ -40,8 +39,7 @@ class MyAppSpace extends StatelessWidget {
                 height: double.infinity,
                 width: double.infinity,
                 child: CachedNetworkImage(
-                  imageUrl: "https://image.tmdb.org/t/p/w1000_and_h563_face/" +
-                      movie.backdropPath,
+                  imageUrl: movie?.backdropPath ?? '',
                   fit: BoxFit.cover,
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
                       const LoadingIndicator(),
@@ -69,7 +67,7 @@ class MyAppSpace extends StatelessWidget {
                   left: (value + 4) / 5 == 1 ? 20.w : (value + 5) * 12,
                   right: (value + 4) / 5 == 1 ? 20 : (value + 5) * 5,
                   bottom: value < 1
-                      ? movie.title.length > 38
+                      ? movie!.title!.length > 38
                           ? -12.h
                           : -25
                       : 10.h,
@@ -77,7 +75,7 @@ class MyAppSpace extends StatelessWidget {
                     width: ScreenUtil().screenWidth * 0.98,
                     height: 60.h,
                     child: Text(
-                      movie.title,
+                      movie?.title ?? '',
                       style: MyTextStyle.sliderMovieName(context).copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize:
@@ -109,27 +107,23 @@ class MyAppSpace extends StatelessWidget {
                       children: [
                         Column(
                           children: [
-                            SmoothStarRating(
-                              allowHalfRating: false,
-                              onRated: (v) {},
-                              starCount: 5,
-                              rating: 5 * (movie.voteAverage / 10),
-                              size: 12.sp,
-                              isReadOnly: true,
-                              color: Theme.of(context).colorScheme.secondary,
-                              borderColor:
-                                  Theme.of(context).colorScheme.secondary,
-                              spacing: 0.0,
+                            SizedBox(
+                              child: Row(
+                                children: getStar(movie?.voteAverage),
+                              ),
                             ),
                             Text(
-                              "${movie.voteCount} VOTES",
+                              "${movie?.voteCount} VOTES",
                               style: MyTextStyle.movieCardSubtitle(context)
                                   .copyWith(color: Colors.white54),
                             ),
                           ],
                         ),
                         Text(
-                          movie.voteAverage.toString().replaceAll('.', ','),
+                          movie!.voteAverage.toString().replaceAll('.', ','),
+                          key: Key(movie!.voteAverage
+                              .toString()
+                              .replaceAll('.', ',')),
                           style:
                               MyTextStyle.movieCardSubtitle(context).copyWith(
                             fontSize: 40.sp,
