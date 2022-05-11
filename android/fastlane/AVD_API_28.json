@@ -1,0 +1,20 @@
+{
+    "avd_list": [
+      {
+        "avd_name": "Pixel_XL_API_28",
+    
+        "create_avd_package": "system-images;android-28;google_apis_playstore;x86",
+        "create_avd_device": "pixel_xl",
+        "create_avd_tag": "",
+        "create_avd_abi": "google_apis_playstore/x86",
+        "create_avd_additional_options": "",
+        "create_avd_hardware_config_filepath": "",
+    
+        "launch_avd_port": "",
+        "launch_avd_snapshot_filepath": "",
+        "launch_avd_launch_binary_name": "emulator",
+        "launch_avd_additional_options": "-gpu on -no-boot-anim -memory 4096"
+      }
+    ]
+   }
+   
